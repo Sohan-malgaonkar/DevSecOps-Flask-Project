@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Clone Code') {
             steps {
-                git 'https://github.com/Sohan-malgaonkar/DevSecOps-Flask-Project'
+                git branch: 'main', url: 'https://github.com/Sohan-malgaonkar/DevSecOps-Flask-Project'
             }
         }
 
