@@ -2,14 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Clone Code') {
-            steps {
-                dir('flask-app') {
-                    git url: 'https://github.com/Sohan-malgaonkar/DevSecOps-Flask-Project'
-                }
-            }
-        }
-
         stage('Build Docker Image') {
             steps {
                 dir('flask-app') {
