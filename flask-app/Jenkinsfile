@@ -4,23 +4,25 @@ pipeline {
     stages {
         stage('Clone Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/Sohan-malgaonkar/DevSecOps-Flask-Project'
+                dir('flask-app') {
+                    git url: 'https://github.com/Sohan-malgaonkar/DevSecOps-Flask-Project'
+                }
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t flask-devsecops-app .'
+                dir('flask-app') {
+                    sh 'docker build -t flask-devsecops-app .'
+                }
             }
         }
 
         stage('Run Container') {
             steps {
-                sh '''
-                    docker stop flask-app || true
-                    docker rm flask-app || true
-                    docker run -d -p 5000:5000 --name flask-app flask-devsecops-app
-                '''
+                dir('flask-app') {
+                    sh 'docker run -d -p 5000:5000 flask-devsecops-app'
+                }
             }
         }
     }
