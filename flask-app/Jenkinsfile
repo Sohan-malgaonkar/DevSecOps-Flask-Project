@@ -13,9 +13,11 @@ pipeline {
         stage('Run Container') {
             steps {
                 dir('flask-app') {
-                    sh 'docker run -d -p 5000:5000 flask-devsecops-app'
+                    sh '''
+                        docker stop flask-devsecops-app || true
+                        docker rm flask-devsecops-app || true
+                        docker run -d -p 5000:5000 --name flask-devsecops-app flask-devsecops-app
+                    '''
                 }
             }
         }
-    }
-}
