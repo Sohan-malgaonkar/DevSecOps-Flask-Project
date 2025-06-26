@@ -14,16 +14,24 @@ pipeline {
             steps {
                 dir('flask-app') {
                     sh '''
-                        # Stop existing container if running
                         docker stop flask-devsecops-app || true
                         docker rm flask-devsecops-app || true
-
-                        # Kill any process using port 5000
                         fuser -k 5000/tcp || true
-
-                        # Run new container
                         docker run -d -p 5000:5000 --name flask-devsecops-app flask-devsecops-app
                     '''
+                }
+            }
+        }
+
+        stage('Test Application') {
+            steps {
+                script {
+                    def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:5000", returnStdout: true).trim()
+                    if (response != '200') {
+                        error("Health check failed! Expected HTTP 200, but got ${response}")
+                    } else {
+                        echo "Health check passed! App is running successfully."
+                    }
                 }
             }
         }
