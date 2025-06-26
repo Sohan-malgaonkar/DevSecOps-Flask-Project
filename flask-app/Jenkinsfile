@@ -26,11 +26,12 @@ pipeline {
         stage('Test Application') {
             steps {
                 script {
-                    def response = sh(script: "curl -s -o /dev/null -w '%{http_code}' http://localhost:5000", returnStdout: true).trim()
-                    if (response != '200') {
-                        error("Health check failed! Expected HTTP 200, but got ${response}")
+                    sh 'sleep 5' // Give Flask time to start
+                    def status = sh(script: 'curl -s -o /dev/null -w "%{http_code}" http://localhost:5000', returnStdout: true).trim()
+                    if (status != "200") {
+                        error "Flask app is not healthy! HTTP Status: ${status}"
                     } else {
-                        echo "Health check passed! App is running successfully."
+                        echo "Flask app is healthy!"
                     }
                 }
             }
